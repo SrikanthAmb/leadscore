@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+  		<meta charset="UTF-8">
+  
+    
+  		<title>X EDUCATION</title>
+			<style>
+				#example {
+   			 		border: 2px solid black;
+  			 		padding: 25px;
+    			 		background-repeat: no-repeat;
+			 		background-size: auto;
+			 		background-image:url("C:\Users\MahaGaNapathi\Downloads\END2END\leadscore\static\images\Institution.jpg");
+					}
+			</style>
+	
+	</head>
+ 
+<body>
+
+      <!-- Show INSTITUTION banner-->
+     
+  
+    <div id="example" style="color:blue">
+	 <img src="C:\Users\MahaGaNapathi\Downloads\END2END\leadscore\static\images\Institution.jpg" alt="Institution" style="width:100%;height:100%"> 
+	
+        <form action="{{ url_for('predict')}}" method="post">
+            <h2>X INSTITUTION</h2>
+            <h3>const </h3><select name="const" id="eigth" type="number" required="required"><br>
+                <option value=1>1</option>
+            </select>
+            <h3>Time spent on Website</h3><input id="first" name="Time_Spent_on_Website" type="number"><br>
+            <h3>Profile Score</h3><input id="second" name="Asymmetric_Profile_Score" type="number"><br>
+            
+            <h3>Working Professional </h3><select name="Current_Occupation_Working_Professional" id="third" type="number" required="required"><br>
+                <option value=0>0</option>
+                <option value=1>1</option>
+            </select>
+            <h3>Phone Ringing </h3><select name="Tags_Ringing" id="fourth" type="number" required="required"><br>
+                <option value=0>0</option>
+                <option value=1>1</option>
+            </select>
+            <h3>Revert after reading the email </h3><select name="Tags_Will_revert_after_reading_the_email" id="fifth" type="number" required="required"><br>
+                <option value=0>0</option>
+                <option value=1>1</option>
+            </select>
+            <h3>Confirm Lead </h3><select name="Lead_Quality_Other_than_Might_be_and_Not_Sure" id="sixth" type="number" required="required"><br>
+                <option value=0>0</option>
+                <option value=1>1</option>
+            </select>
+            <h3>SMS sent recently </h3><select name="Last_Notable_Activity_SMS_Sent" id="seventh" type="number" required="required"><br>
+                <option value=0>0</option>
+                <option value=1>1</option>
+            </select>
+            
+            <br><br><button id="sub" type="submit "> Will Student become Xian ? </button>
+            <br>
+
+        </form>
+
+         
+       <!-- Show predicted output using ML model --> 
+       <div>
+           <center>
+               <h1>{{ prediction_text }}</h1>
+           </center>
+       </div>
+
+     </div>
+
+</body>
+</html>

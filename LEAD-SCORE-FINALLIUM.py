@@ -1316,10 +1316,46 @@ y_train_pred[:10]
 # In[170]:
 
 
-y_train_pred_final['Converted_Prob'] = y_train_pred
+y_train.shape
 
 
 # In[171]:
+
+
+y_train_inter=pd.DataFrame({'Converted':y_train,'Predicted_inter':y_train_pred})
+
+
+# In[172]:
+
+
+y_train_inter['Predicted_inter']=y_train_inter['Predicted_inter'].map(lambda x: 1 if x>0.5 else 0)
+
+
+# In[173]:
+
+
+y_train_inter.head()
+
+
+# In[174]:
+
+
+After_vif_updated_features_accuracy_score=metrics.accuracy_score(y_train_inter.Converted, y_train_inter.Predicted_inter)
+
+
+# In[175]:
+
+
+After_vif_updated_features_accuracy_score
+
+
+# In[176]:
+
+
+y_train_pred_final['Converted_Prob'] = y_train_pred
+
+
+# In[177]:
 
 
 # Creating new column 'predicted' with 1 if Converted_Prob > 0.5 else 0
@@ -1327,7 +1363,7 @@ y_train_pred_final['predicted'] = y_train_pred_final.Converted_Prob.map(lambda x
 y_train_pred_final.head()
 
 
-# In[172]:
+# In[178]:
 
 
 # Let's take a look at the confusion matrix again 
@@ -1336,7 +1372,7 @@ confusion = metrics.confusion_matrix(y_train_pred_final.Converted, y_train_pred_
 confusion
 
 
-# In[173]:
+# In[179]:
 
 
 # Predicted          not_converted    converted
@@ -1345,7 +1381,7 @@ confusion
 # converted            526            1034 
 
 
-# In[174]:
+# In[180]:
 
 
 # Let's check the overall accuracy.
@@ -1361,7 +1397,7 @@ print(metrics.accuracy_score(y_train_pred_final.Converted, y_train_pred_final.pr
 
 # #### 7.e Metrics beyond simply accuracy
 
-# In[175]:
+# In[181]:
 
 
 TP = confusion[1,1] # true positive 
@@ -1370,35 +1406,35 @@ FP = confusion[0,1] # false positives
 FN = confusion[1,0] # false negatives
 
 
-# In[176]:
+# In[182]:
 
 
 # Let's see the sensitivity of our logistic regression model
 print(TP / float(TP+FN))
 
 
-# In[177]:
+# In[183]:
 
 
 # Let us calculate specificity
 print(TN / float(TN+FP))
 
 
-# In[178]:
+# In[184]:
 
 
 # Calculate false postive rate - predicting converted when customer does not have converted
 print(FP/ float(TN+FP))
 
 
-# In[179]:
+# In[185]:
 
 
 # positive predictive value 
 print (TP / float(TP+FP))
 
 
-# In[180]:
+# In[186]:
 
 
 # Negative predictive value
@@ -1407,7 +1443,7 @@ print (TN / float(TN+ FN))
 
 # ## Step 8: Plotting the ROC Curve
 
-# In[181]:
+# In[187]:
 
 
 def draw_roc( actual, probs ):
@@ -1428,14 +1464,14 @@ def draw_roc( actual, probs ):
     return None
 
 
-# In[182]:
+# In[188]:
 
 
 fpr, tpr, thresholds = metrics.roc_curve( y_train_pred_final.Converted, 
                                          y_train_pred_final.Converted_Prob, drop_intermediate = False )
 
 
-# In[183]:
+# In[189]:
 
 
 draw_roc(y_train_pred_final.Converted, y_train_pred_final.Converted_Prob)
@@ -1445,7 +1481,7 @@ draw_roc(y_train_pred_final.Converted, y_train_pred_final.Converted_Prob)
 
 # #### 9.a Optimal cutoff probability is that prob where we get balanced sensitivity and specificity
 
-# In[184]:
+# In[190]:
 
 
 # Let's create columns with different lead score probability cutoffs 
@@ -1455,7 +1491,7 @@ for i in lead_score_prob:
 y_train_pred_final.head()
 
 
-# In[185]:
+# In[191]:
 
 
 # Now let's calculate accuracy sensitivity and specificity for various lead score probability cutoffs.
@@ -1484,7 +1520,7 @@ for i in num:
 print(cutoff_df)
 
 
-# In[186]:
+# In[192]:
 
 
 # Let's plot accuracy sensitivity and specificity for various probabilities.
@@ -1492,7 +1528,7 @@ cutoff_df.plot.line(x='Lead_Score_prob', y=['accuracy','sensi','speci'])
 plt.show()
 
 
-# In[187]:
+# In[193]:
 
 
 def Find_Optimal_Cutoff(target, predicted):
@@ -1514,13 +1550,13 @@ threshold_cutoff = Find_Optimal_Cutoff(y_train_pred_final.Converted,
 threshold_cutoff
 
 
-# In[188]:
+# In[194]:
 
 
 print("From the curve above,", round(threshold_cutoff[0],2)," is the optimum point to take it as a cutoff probability.")
 
 
-# In[189]:
+# In[195]:
 
 
 y_train_pred_final['final_predicted'] = y_train_pred_final.Converted_Prob.map(lambda x: 1 if x > round(threshold_cutoff[0],2) else 0)
@@ -1528,21 +1564,21 @@ y_train_pred_final['final_predicted'] = y_train_pred_final.Converted_Prob.map(la
 y_train_pred_final.head()
 
 
-# In[190]:
+# In[196]:
 
 
 # Let's check the overall accuracy.
 metrics.accuracy_score(y_train_pred_final.Converted, y_train_pred_final.final_predicted)
 
 
-# In[191]:
+# In[197]:
 
 
 confusion2 = metrics.confusion_matrix(y_train_pred_final.Converted, y_train_pred_final.final_predicted )
 confusion2
 
 
-# In[192]:
+# In[198]:
 
 
 TP = confusion2[1,1] # true positive 
@@ -1551,35 +1587,35 @@ FP = confusion2[0,1] # false positives
 FN = confusion2[1,0] # false negatives
 
 
-# In[193]:
+# In[199]:
 
 
 # Let's see the sensitivity of our logistic regression model
 print(TP / float(TP+FN))
 
 
-# In[194]:
+# In[200]:
 
 
 # Let us calculate specificity
 print(TN / float(TN+FP))
 
 
-# In[195]:
+# In[201]:
 
 
 # Calculate false postive rate - predicting converted when customer does not have converted
 print(FP/ float(TN+FP))
 
 
-# In[196]:
+# In[202]:
 
 
 # Positive predictive value 
 print (TP / float(TP+FP))
 
 
-# In[197]:
+# In[203]:
 
 
 # Negative predictive value
@@ -1588,13 +1624,13 @@ print (TN / float(TN+ FN))
 
 # #### 9.b Precision and Recall
 
-# In[198]:
+# In[204]:
 
 
 #Looking at the confusion matrix again
 
 
-# In[199]:
+# In[205]:
 
 
 confusion3 = metrics.confusion_matrix(y_train_pred_final.Converted, y_train_pred_final.predicted )
@@ -1605,7 +1641,7 @@ confusion3
 
 # TP / TP + FP
 
-# In[200]:
+# In[206]:
 
 
 confusion3[1,1]/(confusion3[0,1]+confusion3[1,1])
@@ -1615,7 +1651,7 @@ confusion3[1,1]/(confusion3[0,1]+confusion3[1,1])
 
 # TP / TP + FN
 
-# In[201]:
+# In[207]:
 
 
 confusion3[1,1]/(confusion3[1,0]+confusion3[1,1])
@@ -1623,19 +1659,19 @@ confusion3[1,1]/(confusion3[1,0]+confusion3[1,1])
 
 # ###### Using sklearn utilities for the same
 
-# In[202]:
+# In[208]:
 
 
 from sklearn.metrics import precision_score, recall_score
 
 
-# In[203]:
+# In[209]:
 
 
 precision_score(y_train_pred_final.Converted, y_train_pred_final.predicted)
 
 
-# In[204]:
+# In[210]:
 
 
 recall_score(y_train_pred_final.Converted, y_train_pred_final.predicted)
@@ -1643,25 +1679,25 @@ recall_score(y_train_pred_final.Converted, y_train_pred_final.predicted)
 
 # #### 9.c Precision and recall tradeoff
 
-# In[205]:
+# In[211]:
 
 
 from sklearn.metrics import precision_recall_curve
 
 
-# In[206]:
+# In[212]:
 
 
 y_train_pred_final.Converted, y_train_pred_final.predicted
 
 
-# In[207]:
+# In[213]:
 
 
 precision, recall, thresholds_prc = precision_recall_curve(y_train_pred_final.Converted, y_train_pred_final.Converted_Prob)
 
 
-# In[208]:
+# In[214]:
 
 
 # convert to f score
@@ -1669,7 +1705,7 @@ fscore = (2 * precision * recall) / (precision + recall)
 print(fscore)
 
 
-# In[209]:
+# In[215]:
 
 
 # locate the index of the largest f score
@@ -1677,13 +1713,13 @@ ix = argmax(fscore)
 print(ix)
 
 
-# In[210]:
+# In[216]:
 
 
 print('Best Threshold=%f, F-Score=%.3f' % (thresholds_prc[ix], fscore[ix]))
 
 
-# In[211]:
+# In[217]:
 
 
 # plot the roc curve for the model
@@ -1701,106 +1737,64 @@ plt.legend()
 plt.show()
 
 
-# In[212]:
+# In[218]:
 
 
 y_train_pred_final.head()
 
 
-# In[213]:
+# In[219]:
 
 
 y_train=y_train_pred_final[['Converted','Lead_Number','final_predicted']]
 
 
-# In[214]:
+# In[220]:
 
 
 y_train.set_index('Lead_Number')
 
 
-# In[215]:
+# In[221]:
 
 
 X_train.head()
 
 
-# In[216]:
+# In[222]:
 
 
 X_train.index.name = 'Lead_Number'
 
 
-# In[217]:
+# In[223]:
 
 
 Lead_train = pd.merge(X_train, y_train, left_index=True, right_index=True)
 
 
-# In[218]:
+# In[224]:
 
 
 Lead_train.head()
 
 
-# In[219]:
+# In[225]:
 
 
 Lead_train.isna().sum()
 
 
-# In[220]:
+# In[226]:
 
 
 Lead_train.shape
 
 
-# In[221]:
-
-
-Lead=Lead_train
-
-
-# In[222]:
-
-
-colm_vifu
-
-
-# In[223]:
-
-
-ab=[]
-for c in Lead.columns:
-    if c not in colm_vifu:
-        ab.append(c)
-ab
-
-
-# In[224]:
-
-
-Lead.drop(['Converted'],axis=1,inplace=True)
-
-
-# In[225]:
-
-
-Lead.columns
-
-
-# ## Step 10: Making predictions on the test set
-
-# In[226]:
-
-
-X_test
-
-
 # In[227]:
 
 
-X_test_sc=scaler.transform(X_test)
+Lead=Lead_train
 
 
 # In[228]:
@@ -1812,52 +1806,94 @@ colm_vifu
 # In[229]:
 
 
-X_test_sm = sm.add_constant(X_test_sc)
+ab=[]
+for c in Lead.columns:
+    if c not in colm_vifu:
+        ab.append(c)
+ab
 
-
-# Making predictions on the test set
 
 # In[230]:
 
 
-y_test_pred = res.predict(X_test_sm)
+Lead.drop(['Converted'],axis=1,inplace=True)
 
 
 # In[231]:
 
 
+Lead.columns
+
+
+# ## Step 10: Making predictions on the test set
+
+# In[232]:
+
+
+X_test
+
+
+# In[233]:
+
+
+X_test_sc=scaler.transform(X_test)
+
+
+# In[234]:
+
+
+colm_vifu
+
+
+# In[235]:
+
+
+X_test_sm = sm.add_constant(X_test_sc)
+
+
+# Making predictions on the test set
+
+# In[236]:
+
+
+y_test_pred = res.predict(X_test_sm)
+
+
+# In[237]:
+
+
 y_test_pred[:10]
 
 
-# In[232]:
+# In[238]:
 
 
 # Converting y_pred to a dataframe which is an array
 y_pred_df = pd.DataFrame(y_test_pred)
 
 
-# In[233]:
+# In[239]:
 
 
 # Let's see the head
 y_pred_df.head()
 
 
-# In[234]:
+# In[240]:
 
 
 # Converting y_test to dataframe
 y_test_df = pd.DataFrame(y_test)
 
 
-# In[235]:
+# In[241]:
 
 
 # Putting Lead_Number to index
 y_test_df['Lead_Number'] = y_test_df.index
 
 
-# In[236]:
+# In[242]:
 
 
 # Removing index for both dataframes to append them side by side 
@@ -1865,41 +1901,41 @@ y_pred_df.reset_index(drop=True, inplace=True)
 y_test_df.reset_index(drop=True, inplace=True)
 
 
-# In[237]:
+# In[243]:
 
 
 # Appending y_test_df and y_pred_1
 y_pred_final = pd.concat([y_test_df, y_pred_df],axis=1)
 
 
-# In[238]:
+# In[244]:
 
 
 y_pred_final.head()
 
 
-# In[239]:
+# In[245]:
 
 
 # Renaming the column 
 y_pred_final= y_pred_final.rename(columns={ 0 : 'Converted_Prob'})
 
 
-# In[240]:
+# In[246]:
 
 
 # Rearranging the columns
 y_pred_final = y_pred_final.reindex(['Lead_Number','Converted','Converted_Prob'], axis=1)
 
 
-# In[241]:
+# In[247]:
 
 
 # Let's see the head of y_pred_final
 y_pred_final.head()
 
 
-# In[242]:
+# In[248]:
 
 
 # Best Threshold = 0.32
@@ -1907,25 +1943,25 @@ y_pred_final.head()
 y_pred_final['final_predicted'] = y_pred_final.Converted_Prob.map(lambda x: 1 if x > thresholds_prc[ix] else 0)
 
 
-# In[243]:
+# In[249]:
 
 
 y_pred_final.head(10)
 
 
-# In[244]:
+# In[250]:
 
 
 y_pred_final['Converted_Prob_Rounded']=y_pred_final['Converted_Prob'].round(2)
 
 
-# In[245]:
+# In[251]:
 
 
 y_pred_final.head()
 
 
-# In[246]:
+# In[252]:
 
 
 y_pred_final['LEAD_SCORE'] = pd.qcut(y_pred_final['Converted_Prob_Rounded'].rank(method='first'), 101, labels=False)
@@ -1933,7 +1969,7 @@ y_pred_final['LEAD_SCORE'] = pd.qcut(y_pred_final['Converted_Prob_Rounded'].rank
 y_pred_final.head(10)
 
 
-# In[247]:
+# In[253]:
 
 
 ## Above Lead Score value that leads to productive calls to students
@@ -1944,28 +1980,28 @@ lead_score_set=set(y_pred_final['Converted_Prob_Rounded'].to_list())
 lead_score_set
 
 
-# In[248]:
+# In[254]:
 
 
 Optimal_Lead_Score=y_pred_final.loc[y_pred_final['Converted_Prob_Rounded'] == 0.32, 'LEAD_SCORE'].iloc[0] 
 Optimal_Lead_Score
 
 
-# In[249]:
+# In[255]:
 
 
 # Let's check the overall accuracy.
 metrics.accuracy_score(y_pred_final.Converted, y_pred_final.final_predicted)
 
 
-# In[250]:
+# In[256]:
 
 
 confusion4 = metrics.confusion_matrix(y_pred_final.Converted, y_pred_final.final_predicted )
 confusion4
 
 
-# In[251]:
+# In[257]:
 
 
 TP = confusion4[1,1] # true positive 
@@ -1974,14 +2010,14 @@ FP = confusion4[0,1] # false positives
 FN = confusion4[1,0] # false negatives
 
 
-# In[252]:
+# In[258]:
 
 
 # Let's see the sensitivity of our logistic regression model
 print(TP / float(TP+FN))
 
 
-# In[253]:
+# In[259]:
 
 
 # Let us calculate specificity
@@ -1990,62 +2026,62 @@ print(TN / float(TN+FP))
 
 # #### SUBJECTIVE QUESTION AND ANSWERS
 
-# In[254]:
+# In[260]:
 
 
 y_subj=y_pred_final[['Lead_Number','final_predicted']]
 
 
-# In[255]:
+# In[261]:
 
 
 X_test.head()
 
 
-# In[256]:
+# In[262]:
 
 
 X_subj=X_test.copy()
 
 
-# In[257]:
+# In[263]:
 
 
 X_subj.head()
 
 
-# In[258]:
+# In[264]:
 
 
 X_subj['Lead_Number']=X_test.index
 X_subj = X_subj.reset_index(drop=True)
 
 
-# In[259]:
+# In[265]:
 
 
 x_y_merge=y_subj.merge(X_subj, how = 'inner')
 
 
-# In[260]:
+# In[266]:
 
 
 x_y_merge.head()
 
 
-# In[261]:
+# In[267]:
 
 
 #x_y_merge=x_y_merge.rename(columns={'Last Notable Activity_Email Bounced':'Last_Notable_Activity_Email_Bounced'})
 
 
-# In[262]:
+# In[268]:
 
 
 x_y_merge.head()
 
 
-# In[263]:
+# In[269]:
 
 
 # plotting heatmap to understand exact correlation between variables
@@ -2054,25 +2090,25 @@ plt.figure(figsize=(12,12))
 sns.heatmap(x_y_merge.corr(),annot=True);
 
 
-# In[264]:
+# In[270]:
 
 
 y_subj=y_pred_final[['Lead_Number','LEAD_SCORE']]
 
 
-# In[265]:
+# In[271]:
 
 
 Useful_calls = y_subj.loc[y_subj['LEAD_SCORE'] > Optimal_Lead_Score]
 
 
-# In[266]:
+# In[272]:
 
 
 Useful_calls
 
 
-# In[267]:
+# In[273]:
 
 
 print("The team should call to those leads who hold rank above",Optimal_Lead_Score," because they have more probability of getting converted.")
@@ -2088,37 +2124,37 @@ print("The team should call to those leads who hold rank above",Optimal_Lead_Sco
 
 
 
-# In[268]:
+# In[274]:
 
 
 Lead.columns
 
 
-# In[269]:
+# In[275]:
 
 
 X=Lead.drop(['Lead_Number', 'final_predicted'],axis=1)
 
 
-# In[270]:
+# In[276]:
 
 
 X.shape
 
 
-# In[271]:
+# In[277]:
 
 
 y=Lead['final_predicted']
 
 
-# In[272]:
+# In[278]:
 
 
 y.shape
 
 
-# In[273]:
+# In[279]:
 
 
 # train-test-split
@@ -2126,37 +2162,37 @@ y.shape
 # X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=42)
 
 
-# In[274]:
+# In[280]:
 
 
 X_train_sc.shape
 
 
-# In[275]:
+# In[281]:
 
 
 X_test_sc.shape
 
 
-# In[276]:
+# In[282]:
 
 
 y_train.shape
 
 
-# In[277]:
+# In[283]:
 
 
 y_test.shape
 
 
-# In[278]:
+# In[284]:
 
 
 y_train=y_train.drop(['Converted','Lead_Number'],axis=1)
 
 
-# In[279]:
+# In[285]:
 
 
 from sklearn.metrics import accuracy_score
@@ -2164,27 +2200,27 @@ from sklearn.metrics import accuracy_score
 
 # #### Decision Tree Classifier
 
-# In[280]:
+# In[286]:
 
 
 from sklearn.tree import DecisionTreeClassifier
 
 
-# In[281]:
+# In[287]:
 
 
 dt_classifier=DecisionTreeClassifier()
 _=dt_classifier.fit(X_train_sc,y_train)
 
 
-# In[282]:
+# In[288]:
 
 
 y_pred_dt=dt_classifier.predict(X_test_sc)
 dt_accuracy=round(accuracy_score(y_test,y_pred_dt)*100,2)
 
 
-# In[283]:
+# In[289]:
 
 
 dt_accuracy
@@ -2192,27 +2228,27 @@ dt_accuracy
 
 # #### Random Forest Classifier
 
-# In[284]:
+# In[290]:
 
 
 from sklearn.ensemble import RandomForestClassifier
 
 
-# In[285]:
+# In[291]:
 
 
 rfc_classifier=RandomForestClassifier(n_estimators=20,criterion='entropy',random_state=51)
 rfc_classifier.fit(X_train_sc,y_train)
 
 
-# In[286]:
+# In[292]:
 
 
 y_pred_rfc=rfc_classifier.predict(X_test_sc)
 rfc_accuracy=round(accuracy_score(y_test,y_pred_rfc)*100,2)
 
 
-# In[287]:
+# In[293]:
 
 
 rfc_accuracy
@@ -2220,13 +2256,13 @@ rfc_accuracy
 
 # #### AdaBoost Classifier
 
-# In[288]:
+# In[294]:
 
 
 from sklearn.ensemble import AdaBoostClassifier
 
 
-# In[289]:
+# In[295]:
 
 
 adb_classifier=AdaBoostClassifier(DecisionTreeClassifier(criterion='entropy',random_state=21),
@@ -2237,14 +2273,14 @@ adb_classifier=AdaBoostClassifier(DecisionTreeClassifier(criterion='entropy',ran
 adb_classifier.fit(X_train_sc,y_train)
 
 
-# In[290]:
+# In[296]:
 
 
 y_pred_adb=adb_classifier.predict(X_test_sc)
 adb_accuracy=round(accuracy_score(y_test,y_pred_adb)*100,2)
 
 
-# In[291]:
+# In[297]:
 
 
 adb_accuracy
@@ -2252,27 +2288,27 @@ adb_accuracy
 
 # #### XGBoost Classifier
 
-# In[292]:
+# In[298]:
 
 
 import xgboost as xgb
 
 
-# In[293]:
+# In[299]:
 
 
 xgb_classifier=xgb.XGBClassifier()
 xgb_classifier.fit(X_train_sc,y_train)
 
 
-# In[294]:
+# In[300]:
 
 
 y_pred_xgb=xgb_classifier.predict(X_test_sc)
 xgb_accuracy=round(accuracy_score(y_test,y_pred_xgb)*100,2)
 
 
-# In[295]:
+# In[301]:
 
 
 xgb_accuracy
@@ -2280,13 +2316,13 @@ xgb_accuracy
 
 # ### Saving the Model
 
-# In[297]:
+# In[302]:
 
 
 import pickle
 
 #dump information to that file
-pickle.dump(logm4,open('logmodel.pkl','wb'))
+pickle.dump(logm_vif,open('logmodel.pkl','wb'))
 
 #load a model
 pickle.load(open('logmodel.pkl','rb'))
